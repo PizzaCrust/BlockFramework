@@ -2,13 +2,12 @@ package net.blockframe.map;
 
 import javassist.ClassPool;
 import javassist.CtClass;
-import javassist.CtMethod;
 import javassist.NotFoundException;
+import net.blockframe.BlockFramework;
 import net.blockframe.map.model.ClassMapping;
 import net.blockframe.map.model.MethodMapping;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * A registry for obfuscation to de-obfuscated or de-obfuscated to obfuscation for classes/methods/fields.
@@ -18,7 +17,10 @@ public final class MappingsRegistry {
     private static ClassPool classPath = ClassPool.getDefault();
 
     public static void addClassMappings(ClassMapping... classMappings) {
-        Collections.addAll(classes, classMappings);
+       for (ClassMapping classMapping : classMappings) {
+           BlockFramework.LOGGER.info("Registering class " + classMapping.getDeobfuscatedName() + " (" + classMapping.getObfuscatedName() + ")...");
+           classes.add(classMapping);
+       }
     }
 
     public static String getClassMapping(String deobfuscatedName) {
@@ -50,7 +52,7 @@ public final class MappingsRegistry {
 
     public static MethodMapping getMethodMapping(String deobfClassName, String deobfMethodName) {
         for (MethodMapping methodMapping : getMethodMappings(deobfClassName)) {
-            if (methodMapping.getDeobfuscatedName().equals(deobfClassName)) {
+            if (methodMapping.getDeobfuscatedName().equals(deobfMethodName)) {
                 return methodMapping;
             }
         }

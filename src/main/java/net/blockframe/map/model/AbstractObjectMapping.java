@@ -8,15 +8,11 @@ public class AbstractObjectMapping {
     private String obf = null;
 
     public void setDeobfuscatedName(String deobf) {
-        if (this.deobf == null) {
             this.deobf = deobf;
-        }
     }
 
     public void setObfuscatedName(String obf) {
-        if (obf == null) {
             this.obf = obf;
-        }
     }
 
     public String getObfuscatedName() {
