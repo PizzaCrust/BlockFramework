@@ -17,7 +17,7 @@ public class FrameworkTransformer {
         for (CtMethod method : dedicatedServer.getDeclaredMethods()) {
             String startServerMethod = MappingsRegistry.getMethodMapping("net.minecraft.server.dedicated.DedicatedServer", "startServer").getObfuscatedName();
             if (method.getName().equals(startServerMethod) && method.getReturnType() == CtClass.booleanType) {
-                System.out.println("found startServer");
+                method.insertAt(1041, "System.out.println(\"Injected!\");"); // there is no bytecode on this line, so easy injection.
             }
         }
         dedicatedServer.toClass();
