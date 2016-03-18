@@ -1,0 +1,1 @@
+This directory is for testing the framework using the runServer gradle task.
