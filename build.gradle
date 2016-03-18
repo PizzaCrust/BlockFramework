@@ -10,3 +10,17 @@ repositories {
 dependencies {
     compile 'org.javassist:javassist:3.20.0-GA'
 }
+
+jar {
+    manifest {
+        attributes "Premain-Class": "net.blockframe.BlockFrame"
+    }
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
