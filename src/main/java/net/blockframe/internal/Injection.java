@@ -2,6 +2,7 @@ package net.blockframe.internal;
 
 import net.blockframe.BlockFramework;
 import net.blockframe.plugin.PluginManager;
+import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
@@ -16,8 +17,10 @@ import java.util.jar.JarFile;
  */
 public class Injection {
     public static final File PLUGINS_DIR = new File(System.getProperty("user.dir"), "plugins");
+    public static MinecraftServer server;
 
-    public static void inject() {
+    public static void inject(MinecraftServer server) {
+        Injection.server = server;
         Logger LOGGER = BlockFramework.LOGGER;
         LOGGER.info("Injected to the Minecraft server!");
         LOGGER.info("Checking for a plugins directory...");

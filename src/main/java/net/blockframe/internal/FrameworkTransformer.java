@@ -20,7 +20,7 @@ public class FrameworkTransformer {
         for (CtMethod method : dedicatedServer.getDeclaredMethods()) {
             String startServerMethod = MappingsRegistry.getMethodMapping("net.minecraft.server.dedicated.DedicatedServer", "startServer").getObfuscatedName();
             if (method.getName().equals(startServerMethod) && method.getReturnType() == CtClass.booleanType) {
-                method.insertAt(1041, "net.blockframe.internal.Injection.inject();"); // there is no bytecode on this line, so easy injection.
+                method.insertAt(1041, "net.blockframe.internal.Injection.inject(this);"); // there is no bytecode on this line, so easy injection.
             }
         }
         dedicatedServer.toClass();
