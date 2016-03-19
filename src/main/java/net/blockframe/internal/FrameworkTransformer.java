@@ -40,11 +40,12 @@ public class FrameworkTransformer {
     private String createAboutCommand() throws Exception {
         CtClass aboutCommand = BlockFramework.classPath.makeClass("net.minecraft.command.AboutCommand");
 
+        String iCommandSender = MappingsRegistry.getClassMapping("net.minecraft.command.ICommandSender");
         String getCommandName = MappingsRegistry.getMethodMapping("net.minecraft.command.ICommand", "getCommandName").getObfuscatedName();
         aboutCommand.addMethod(CtNewMethod.make("public java.lang.String " + getCommandName + "() { return \"about\"; }", aboutCommand));
 
         String getCommandUsage = MappingsRegistry.getMethodMapping("net.minecraft.command.ICommand", "getCommandUsage").getObfuscatedName();
-        aboutCommand.addMethod(CtNewMethod.make("public java.lang.String " + getCommandUsage + "() { return \"about\"; }", aboutCommand));
+        aboutCommand.addMethod(CtNewMethod.make("public java.lang.String " + getCommandUsage + "(" + iCommandSender + " sender) { return \"about\"; }", aboutCommand));
 
         String getCommandAliases = MappingsRegistry.getMethodMapping("net.minecraft.command.ICommand", "getCommandAliases").getObfuscatedName();
         aboutCommand.addMethod(CtNewMethod.make("public java.util.List " + getCommandAliases + "() { java.util.ArrayList aliases = new java.util.ArrayList(); aliases.add(\"abt\"); return aliases; }", aboutCommand));
@@ -52,7 +53,6 @@ public class FrameworkTransformer {
         String cmdMessagePlayer = '\u00a7' + "9This server is currently using: " + '\u00a7' + "cBlockFramework 1.9.1-SNAPSHOT";
         String execute = MappingsRegistry.getMethodMapping("net.minecraft.command.ICommand", "execute").getObfuscatedName();
         String addChatMessage = MappingsRegistry.getMethodMapping("net.minecraft.command.ICommandSender", "addChatMessage").getObfuscatedName();
-        String iCommandSender = MappingsRegistry.getClassMapping("net.minecraft.command.ICommandSender");
         String chatComponentText = MappingsRegistry.getClassMapping("net.minecraft.util.text.TextComponentString");
         aboutCommand.addMethod(CtNewMethod.make("public void " + execute + "(net.minecraft.server.MinecraftServer server, " + iCommandSender + " sender, java.lang.String[] args) { sender." + addChatMessage + "(new " + chatComponentText + "(\""  + cmdMessagePlayer + "\")); }", aboutCommand));
 
