@@ -74,14 +74,6 @@ public final class BlockFramework implements ITweaker{
             e.printStackTrace();
             System.exit(0);
         }
-        LOGGER.info("Transforming MinecraftServer...");
-        try {
-            transformer.transformMinecraftServer();
-        } catch (Exception e) {
-            LOGGER.error("Failed to transform MinecraftServer!");
-            e.printStackTrace();
-            System.exit(0);
-        }
     }
 
     @Override
