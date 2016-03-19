@@ -22,4 +22,14 @@ public class FrameworkTransformer {
         }
         dedicatedServer.toClass();
     }
+
+    public void transformMinecraftServer() throws Exception {
+        CtClass minecraftServer = BlockFramework.classPath.getCtClass("net.minecraft.server.MinecraftServer");
+        for (CtMethod method : minecraftServer.getDeclaredMethods()) {
+            if (method.getName().equals("getServerModName")) {
+                method.setBody("return \"blockframe\";");
+            }
+        }
+        return;
+    }
 }
