@@ -1,4 +1,0 @@
-CL: la net/minecraft/server/dedicated/DedicatedServer
-MD: la/j ()Z net/minecraft/server/dedicated/DedicatedServer/startServer ()Z
-MD: net/minecraft/server/MinecraftServer/G ()Ljava/lang/String; net/minecraft/server/MinecraftServer/getMinecraftVersion ()Ljava/lang/String;
-MD: net/minecraft/server/MinecraftServer/j ()Z net/minecraft/server/MinecraftServer/startServer ()Z
