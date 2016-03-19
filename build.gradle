@@ -31,3 +31,10 @@ task runServer(type: JavaExec) {
     args '--tweakClass', 'net.blockframe.BlockFramework', 'nogui'
     workingDir 'test'
 }
+
+task runServerWithGui(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'net.minecraft.launchwrapper.Launch'
+    args '--tweakClass', 'net.blockframe.BlockFramework'
+    workingDir 'test'
+}
