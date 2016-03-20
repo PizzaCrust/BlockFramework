@@ -7,12 +7,11 @@ import net.blockframe.internal.FrameworkTransformer;
 import net.blockframe.map.MappingsRegistry;
 import net.blockframe.map.model.ClassMapping;
 import net.blockframe.map.model.MethodMapping;
-import net.minecraft.launchwrapper.ITweaker;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.lang.instrument.Instrumentation;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
 /**
  * Represents the tweak of the framework, BlockFramework.
  */
-public final class BlockFramework implements ITweaker{
+public final class BlockFramework {
     public static final Logger LOGGER = LogManager.getLogger("BlockFramework");
     private final ArrayList<String> args = new ArrayList<String>();
     public static final ClassPool classPath = ClassPool.getDefault();
@@ -76,29 +75,9 @@ public final class BlockFramework implements ITweaker{
         };
     }
 
-    @Override
-    public void acceptOptions(List<String> inArgs, File gameDir, File assetsDir, String profile) {
-        LOGGER.info("Processing arguments...");
-        this.args.clear();
-        for (Iterator<String> it = inArgs.iterator(); it.hasNext();) {
-            String arg = it.next();
-            args.add(arg);
-        }
-        if (profile != null) {
-            this.args.add("--version");
-            this.args.add(profile);
-        }
-        if (assetsDir != null) {
-            this.args.add("--assetsDir");
-            this.args.add(assetsDir.getPath());
-        }
-        if (gameDir == null) gameDir = new File(".");
+    public static void premain(String agentArguments, Instrumentation instrumentation) {
         LOGGER.info("Registering needed obfuscation mappings to registry...");
         MappingsRegistry.addClassMappings(getDefaultMappings());
-    }
-
-    @Override
-    public void injectIntoClassLoader(LaunchClassLoader classLoader) {
         FrameworkTransformer transformer = new FrameworkTransformer();
         LOGGER.info("Transforming DedicatedServer...");
         try {
@@ -116,15 +95,5 @@ public final class BlockFramework implements ITweaker{
             e.printStackTrace();
             System.exit(0);
         }
-    }
-
-    @Override
-    public String getLaunchTarget() {
-        return "net.minecraft.server.MinecraftServer";
-    }
-
-    @Override
-    public String[] getLaunchArguments() {
-        return args.toArray(new String[args.size()]);
     }
 }
