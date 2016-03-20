@@ -15,7 +15,7 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Premain-Class": "net.blockframe.BlockFramework"
+        attributes "Premain-Class": "net.blockframe.BlockFramework", "Main-Class": "net.minecraft.server.MinecraftServer"
     }
     from {
         configurations.compile.collect {
