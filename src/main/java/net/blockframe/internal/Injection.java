@@ -1,6 +1,7 @@
 package net.blockframe.internal;
 
 import net.blockframe.BlockFramework;
+import net.blockframe.map.MappingsRegistry;
 import net.blockframe.plugin.PluginManager;
 import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.Logger;
@@ -19,10 +20,22 @@ public class Injection {
     public static final File PLUGINS_DIR = new File(System.getProperty("user.dir"), "plugins");
     public static MinecraftServer server;
 
+    public static Object commandHandlerInstance;
+
     public static void inject(MinecraftServer server) {
         Injection.server = server;
         Logger LOGGER = BlockFramework.LOGGER;
         LOGGER.info("Injected to the Minecraft server!");
+        LOGGER.info("Retrieving command manager instance...");
+        try {
+            Object commandManagerInstance = server.N();
+            Class commandHandler = Class.forName(MappingsRegistry.getClassMapping("net.minecraft.command.CommandHandler"));
+            commandHandlerInstance = commandHandler.cast(commandManagerInstance);
+        } catch (Exception e) {
+            LOGGER.error("Could not retrieve command manager instance!");
+            e.printStackTrace();
+            System.exit(0);
+        }
         LOGGER.info("Checking for a plugins directory...");
         if (!PLUGINS_DIR.exists()) {
             LOGGER.info("Plugins directory isn't created, creating one.");

@@ -28,6 +28,7 @@ public final class BlockFramework {
         //start server
         ClassMapping minecraftServer = new ClassMapping("net.minecraft.server.MinecraftServer", "net.minecraft.server.MinecraftServer");
         minecraftServer.getMethods().add(new MethodMapping("G", "getMinecraftVersion")); // no parameters
+        minecraftServer.getMethods().add(new MethodMapping("i", "createNewCommandManager"));
         // end server
 
         // start d-server
@@ -64,6 +65,10 @@ public final class BlockFramework {
         serverCommandManager.getMethods().add(new MethodMapping("a", "registerCommand")); //icommand
         // end servercommandmanager
 
+        //start commandhandler
+        ClassMapping commandHandler = new ClassMapping("j", "net.minecraft.command.CommandHandler");
+        //end commandhandler
+
         return new ClassMapping[]{
                 minecraftServer,
                 dedicatedServer,
@@ -72,6 +77,7 @@ public final class BlockFramework {
                 textComponentString,
                 iCommand,
                 serverCommandManager,
+                commandHandler,
         };
     }
 
