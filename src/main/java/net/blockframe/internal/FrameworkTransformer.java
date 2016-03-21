@@ -42,7 +42,7 @@ public class FrameworkTransformer {
 
         String iCommandSender = MappingsRegistry.getClassMapping("net.minecraft.command.ICommandSender");
         String getCommandName = MappingsRegistry.getMethodMapping("net.minecraft.command.ICommand", "getCommandName").getObfuscatedName();
-        aboutCommand.addMethod(CtNewMethod.make("public java.lang.String " + getCommandName + "() { return \"about\"; }", aboutCommand));
+        aboutCommand.addMethod(CtNewMethod.make("public java.lang.String " + getCommandName + "() { return \"/about\"; }", aboutCommand));
 
         String getCommandUsage = MappingsRegistry.getMethodMapping("net.minecraft.command.ICommand", "getCommandUsage").getObfuscatedName();
         aboutCommand.addMethod(CtNewMethod.make("public java.lang.String " + getCommandUsage + "(" + iCommandSender + " sender) { return \"about\"; }", aboutCommand));
