@@ -36,11 +36,6 @@ public class Injection {
             e.printStackTrace();
             System.exit(0);
         }
-        LOGGER.info("Checking for a plugins directory...");
-        if (!PLUGINS_DIR.exists()) {
-            LOGGER.info("Plugins directory isn't created, creating one.");
-            PLUGINS_DIR.mkdir();
-        }
         LOGGER.info("Detecting plugin files...");
         File[] jarFiles = PLUGINS_DIR.listFiles(new FilenameFilter() {
             @Override

@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 
+import static net.blockframe.internal.Injection.PLUGINS_DIR;
+
 /**
  * Represents the tweak of the framework, BlockFramework.
  */
@@ -90,6 +92,11 @@ public final class BlockFramework {
     }
 
     public static void premain(String agentArguments, Instrumentation instrumentation) {
+        LOGGER.info("Checking for a plugins directory...");
+        if (!PLUGINS_DIR.exists()) {
+            LOGGER.info("Plugins directory isn't created, creating one.");
+            PLUGINS_DIR.mkdir();
+        }
         LOGGER.info("Registering needed obfuscation mappings to registry...");
         MappingsRegistry.addClassMappings(getDefaultMappings());
         FrameworkTransformer transformer = new FrameworkTransformer();
@@ -110,7 +117,7 @@ public final class BlockFramework {
             System.exit(0);
         }
         LOGGER.info("Searching for transformer plugins...");
-        File[] transformerPlugins = Injection.PLUGINS_DIR.listFiles(new FilenameFilter() {
+        File[] transformerPlugins = PLUGINS_DIR.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
                 return name.endsWith(".transformerplugin");
