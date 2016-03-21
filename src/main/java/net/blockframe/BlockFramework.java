@@ -4,17 +4,25 @@ package net.blockframe;
 import javassist.ClassClassPath;
 import javassist.ClassPool;
 import net.blockframe.internal.FrameworkTransformer;
+import net.blockframe.internal.Injection;
 import net.blockframe.map.MappingsRegistry;
 import net.blockframe.map.model.ClassMapping;
 import net.blockframe.map.model.MethodMapping;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.lang.instrument.Instrumentation;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
 
 /**
  * Represents the tweak of the framework, BlockFramework.
@@ -101,5 +109,31 @@ public final class BlockFramework {
             e.printStackTrace();
             System.exit(0);
         }
+        LOGGER.info("Searching for transformer plugins...");
+        File[] transformerPlugins = Injection.PLUGINS_DIR.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".transformerplugin");
+            }
+        });
+        LOGGER.info("Detected " + transformerPlugins.length + " transformer plugins.");
+        LOGGER.info("Loading transformer plugins...");
+        for (File transformerPlugin : transformerPlugins) {
+            try {
+                JarFile jarFile = new JarFile(transformerPlugin);
+                Attributes attributes = jarFile.getManifest().getMainAttributes();
+                String transformerClass = attributes.getValue("TransformerClass");
+                if (transformerClass == null) {
+                    throw new Exception();
+                }
+                URLClassLoader classLoader = new URLClassLoader(new URL[] { transformerPlugin.toURI().toURL() });
+                Class theClass = classLoader.loadClass(transformerClass);
+                Method blockFrameMethod = theClass.getDeclaredMethod("blockFrame", new Class[] {});
+                blockFrameMethod.invoke(null, null);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        LOGGER.info("Finished loading transformer plugins...");
     }
 }
