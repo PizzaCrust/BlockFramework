@@ -21,9 +21,26 @@ public class PluginManager {
 
     private PluginManager(HashMap<File, String> jarUrls, URLClassLoader classLoader) { this.jarUrls = jarUrls; this.pluginClassLoader = classLoader; }
 
+    private void addURLs(URL[] urls) throws Exception {
+        ClassLoader cl = ClassLoader.getSystemClassLoader();
+        if ( cl instanceof URLClassLoader ) {
+            URLClassLoader ul = (URLClassLoader)cl;
+            Class<?>[] paraTypes = new Class[1];
+            paraTypes[0] = URL.class;
+            Method method = URLClassLoader.class.getDeclaredMethod("addURL", paraTypes);
+            method.setAccessible(true);
+            Object[] args = new Object[1];
+            for(int i=0; i<urls.length; i++) {
+                args[0] = urls[i];
+                method.invoke(ul, args);
+            }
+        }
+    }
+
     public void init() throws Exception {
         for (Map.Entry<File, String> entry : jarUrls.entrySet()) {
             LOGGER.info("Loading file " + entry.getKey().getName() + "...");
+            addURLs(new URL[] { entry.getKey().toURI().toURL() });
             Class mainClass = pluginClassLoader.loadClass(entry.getValue());
             Method blockFrameMethod = mainClass.getDeclaredMethod("blockFrame", new Class[]{});
             blockFrameMethod.invoke(null, null); // public static void blockFrame
